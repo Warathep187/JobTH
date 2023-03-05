@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: auth
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: auth
+    spec:
+      containers:
+        - name: auth-service
+          image: warathep187/auth-service:1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-envs
+                  key: mysql_url
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-envs
+                  key: port
+          ports:
+            - containerPort: 8000
+          
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+spec:
+  selector:
+    app: JobTH
+    service: auth
+  ports:
+    - port: 80
+      targetPort: 8000
+  type: LoadBalancer

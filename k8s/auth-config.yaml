@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-envs
+data:
+  port: "8000"
+  mysql_url: "mysql://root:1234@auth-mysql-service:3306/auth_service"
+  root_password: "1234"

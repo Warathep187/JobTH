@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: message-broker
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: message-broker
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: broker-envs
+                  key: user
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: broker-envs
+                  key: password
+            - name: RABBITMQ_DEFAULT_VHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: broker-envs
+                  key: vhost
+          ports:
+            - containerPort: 15672
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker-service
+spec:
+  selector:
+    app: JobTH
+    service: message-broker
+  ports:
+    - port: 15672
+      targetPort: 15672
+  type: ClusterIP
