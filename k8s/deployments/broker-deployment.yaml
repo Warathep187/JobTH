@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: broker
+  name: message-broker-deployment
 spec:
   selector:
     matchLabels:
@@ -15,8 +15,7 @@ spec:
     spec:
       containers:
         - name: rabbitmq
-          image: rabbitmq
-          imagePullPolicy: IfNotPresent
+          image: rabbitmq:3-management
           env:
             - name: RABBITMQ_DEFAULT_USER
               valueFrom:
@@ -34,18 +33,18 @@ spec:
                   name: broker-envs
                   key: vhost
           ports:
-            - containerPort: 15672
+            - containerPort: 5672
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: broker-service
+  name: message-broker-service
 spec:
   selector:
     app: JobTH
     service: message-broker
   ports:
-    - port: 15672
-      targetPort: 15672
+    - port: 5672
+      targetPort: 5672
   type: ClusterIP

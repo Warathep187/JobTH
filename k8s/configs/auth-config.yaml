@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-envs
+data:
+  mysql_url: "mysql://root:1234@auth-mysql-service:3306/auth_service"
+  mysql_root_password: "1234"
+  rabbit_url: "amqp://user:1234@message-broker-service:5672/vhost"
+  redis_url: "redis://auth-redis-service:6379"

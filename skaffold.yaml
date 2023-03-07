@@ -1,0 +1,20 @@
+apiVersion: skaffold/v4beta2
+kind: Config
+metadata:
+  name: skaffold-dev
+deploy:
+  kubectl:
+    remoteManifests:
+      - k8s/**/*.yaml
+build:
+  local:
+    push: false
+  artifacts:
+    - image: warathep187/auth-service
+      context: auth-service
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: /*.js

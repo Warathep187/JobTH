@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mysql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: auth
+      db: mysql
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: auth
+        db: mysql
+    spec:
+      containers:
+        - name: auth-mysql
+          image: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-envs
+                  key: mysql_root_password
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: auth-db-volume
+              mountPath: /var/lib
+      volumes:
+        - name: auth-db-volume
+          persistentVolumeClaim:
+            claimName: auth-db-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-mysql-service
+spec:
+  selector:
+    app: JobTH
+    service: auth
+    db: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-redis-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: auth
+      db: redis
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: auth
+        db: redis
+    spec:
+      containers:
+        - name: auth-redis
+          image: redis
+          ports:
+            - containerPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-redis-service
+spec:
+  selector:
+    app: JobTH
+    service: profile
+    db: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+  type: ClusterIP
