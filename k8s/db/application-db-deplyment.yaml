@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: application-mysql-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: application
+      db: mysql
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: application
+        db: mysql
+    spec:
+      containers:
+        - name: application-mysql
+          image: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: application-envs
+                  key: mysql_root_password
+          volumeMounts:
+            - name: application-db-volume
+              mountPath: /var/lib
+          ports:
+            - containerPort: 3306
+      volumes:
+        - name: application-db-volume
+          persistentVolumeClaim:
+            claimName: application-db-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: application-db-service
+spec:
+  selector:
+    app: JobTH
+    service: application
+    db: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP

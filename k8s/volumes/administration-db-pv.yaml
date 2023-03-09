@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: administration-db-pv
+spec:
+  capacity:
+    storage: 50Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /data
+  
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: administration-db-pvc
+spec:
+  volumeName: administration-db-pv
+  resources:
+    requests:
+      storage: 50Mi
+  volumeMode: Filesystem
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce

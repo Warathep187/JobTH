@@ -1,7 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: profile-envs
+  name: application-envs
 data:
-  mongodb_uri: "mongodb://job-mongo-service:27017/profile-service"
+  mysql_root_password: "1234"
+  mysql_host: "application-db-service"
   rabbit_url: "amqp://user:1234@message-broker-service:5672/vhost"

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: administration-envs
+data:
+  mongodb_uri: "mongodb://administration-mongo-service:27017/administration-service"
+  rabbit_url: "amqp://user:1234@message-broker-service:5672/vhost"

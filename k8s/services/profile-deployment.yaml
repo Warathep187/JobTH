@@ -8,6 +8,8 @@ spec:
     matchLabels:
       app: JobTH
       service: profile
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -30,6 +32,12 @@ spec:
                   key: rabbit_url
           ports:
             - containerPort: 8001
+          livenessProbe:
+            httpGet:
+              path: /api/profile
+              port: 8001
+            initialDelaySeconds: 15
+            periodSeconds: 10
 
 ---
 apiVersion: v1

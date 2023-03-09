@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: administration-mongo-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: administrator
+      db: mongo
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: administrator
+        db: mongo
+    spec:
+      containers:
+      - name: administration-mongo
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - mountPath: /var/lib
+            name: administration-db-volume
+      volumes:
+        - name: administration-db-volume
+          persistentVolumeClaim:
+            claimName: administration-db-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: administration-mongo-service
+spec:
+  selector:
+    app: JobTH
+    service: administrator
+    db: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017

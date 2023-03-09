@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: administration-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: administration
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: administration
+    spec:
+      containers:
+        - name: administration-service
+          image: warathep187/administration-service:v2
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: administration-envs
+                  key: mongodb_uri
+            - name: RABBIT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: administration-envs
+                  key: rabbit_url
+          ports:
+            - containerPort: 8004
+          livenessProbe:
+            httpGet:
+              path: /api/administration
+              port: 8004
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: administration-service
+spec:
+  selector:
+    app: JobTH
+    service: administration
+  ports:
+    - port: 80
+      targetPort: 8004
+  type: LoadBalancer

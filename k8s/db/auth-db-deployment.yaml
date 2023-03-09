@@ -81,7 +81,7 @@ metadata:
 spec:
   selector:
     app: JobTH
-    service: profile
+    service: auth
     db: redis
   ports:
     - port: 6379

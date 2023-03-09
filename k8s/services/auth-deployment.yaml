@@ -8,6 +8,8 @@ spec:
       app: JobTH
       service: auth
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -35,6 +37,12 @@ spec:
                   key: redis_url
           ports:
             - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /api/auth
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
           
 
 ---
