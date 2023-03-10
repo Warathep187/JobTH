@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: job-statistic-envs
+data:
+  mongodb_uri: "mongodb://job-statistic-db-service:27017"
+  rabbit_url: "amqp://user:1234@message-broker-service:5672/vhost"

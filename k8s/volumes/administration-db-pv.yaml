@@ -19,7 +19,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: administration-db-pvc
 spec:
-  volumeName: administration-db-pv
   resources:
     requests:
       storage: 50Mi

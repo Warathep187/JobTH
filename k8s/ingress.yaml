@@ -30,6 +30,13 @@ spec:
                 name: job-service
                 port: 
                   number: 80
+          - path: /api/application
+            pathType: Prefix
+            backend:
+              service:
+                name: application-service
+                port:
+                  number: 80
           - path: /api/administration
             pathType: Prefix
             backend:
@@ -37,10 +44,24 @@ spec:
                 name: administration-service
                 port:
                   number: 80
-          - path: /api/application
+          - path: /api/job-searching
             pathType: Prefix
             backend:
               service:
-                name: application-service
+                name: job-searching-service
+                port:
+                  number: 80
+          - path: /api/job-statistic
+            pathType: Prefix
+            backend:
+              service:
+                name: job-statistic-service
+                port:
+                  number: 80
+          - path: /api/notification
+            pathType: Prefix
+            backend:
+              service:
+                name: notification-service
                 port:
                   number: 80

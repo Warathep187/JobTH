@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: job-searching-elasticsearch-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: job-searching
+      db: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: job-searching
+        db: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+          env:
+            - name: discovery.type
+              valueFrom:
+                configMapKeyRef:
+                  name: job-searching-envs
+                  key: elasticsearch_discovery_type
+            - name: xpack.security.enabled
+              value: "true"
+            - name: ELASTIC_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: job-searching-envs
+                  key: elasticsearch_password
+          ports:
+            - containerPort: 9200
+          volumeMounts:
+            - name: job-searching-db-volume
+              mountPath: /var/lib
+      volumes:
+        - name: job-searching-db-volume
+          persistentVolumeClaim:
+            claimName: job-searching-db-pvc
+            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: job-searching-elasticsearch-service
+spec:
+  selector:
+    app: JobTH
+    service: job-searching
+    db: elasticsearch
+  ports:
+    - port: 9200
+      targetPort: 9200
+  type: ClusterIP

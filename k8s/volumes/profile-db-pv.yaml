@@ -19,7 +19,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: profile-db-pvc
 spec:
-  volumeName: profile-db-pv
   resources:
     requests:
       storage: 50Mi

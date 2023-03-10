@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: job-statistic-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: JobTH
+      service: job-statistic
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: job-statistic
+    spec:
+      containers:
+      - name: job-statistic-service
+        image: warathep187/job-statistic-service:v2
+        env:
+          - name: MONGODB_URI
+            valueFrom:
+              configMapKeyRef:
+                name: job-statistic-envs
+                key: mongodb_uri
+          - name: RABBIT_URL
+            valueFrom:
+              configMapKeyRef:
+                name: job-statistic-envs
+                key: rabbit_url
+        ports:
+        - containerPort: 8007
+        livenessProbe:
+          httpGet:
+            path: /api/job-statistic
+            port: 8007
+          initialDelaySeconds: 15
+          periodSeconds: 10
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: job-statistic-service
+spec:
+  selector:
+    app: JobTH
+    service: job-statistic
+  ports:
+  - port: 80
+    targetPort: 8007
+  type: LoadBalancer
+

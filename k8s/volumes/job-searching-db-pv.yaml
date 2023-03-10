@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: auth-db-pv
+  name: job-searching-db-pv
 spec:
   capacity:
     storage: 50Mi
@@ -10,14 +10,14 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
   storageClassName: standard
-  hostPath: 
+  hostPath:
     path: /data
-  
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: auth-db-pvc
+  name: job-searching-db-pvc
 spec:
   resources:
     requests:

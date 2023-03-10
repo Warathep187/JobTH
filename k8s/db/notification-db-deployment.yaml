@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-mongo-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: notification
+      db: mongo
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: notification
+        db: mongo
+    spec:
+      containers:
+      - name: notification-mongo
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: notification-db-volume
+            mountPath: /data
+      volumes:
+        - name: notification-db-volume
+          persistentVolumeClaim:
+            claimName: notification-db-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-mongo-service
+spec:
+  selector:
+    app: JobTH
+    service: notification
+    db: mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-redis-deployment
+spec:
+  selector:
+    matchLabels:
+      app: JobTH
+      service: notification
+      db: redis
+  template:
+    metadata:
+      labels:
+        app: JobTH
+        service: notification
+        db: redis
+    spec:
+      containers:
+      - name: notification-redis
+        image: redis
+        ports:
+        - containerPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notification-redis-service
+spec:
+  selector:
+    app: JobTH
+    service: notification
+    db: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+  type: ClusterIP

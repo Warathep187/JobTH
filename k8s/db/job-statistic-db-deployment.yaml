@@ -1,42 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: job-mongo-deployment
+  name: job-statistic-mongo-deployment
 spec:
   selector:
     matchLabels:
       app: JobTH
-      service: job
+      service: job-statistic
       db: mongo
   template:
     metadata:
       labels:
         app: JobTH
-        service: job
+        service: job-statistic
         db: mongo
     spec:
       containers:
-        - name: job-mongo
+        - name: job-statistic-mongo
           image: mongo
           ports:
             - containerPort: 27017
           volumeMounts:
-            - name: job-db-volume
+            - name: job-statistic-db-volume
               mountPath: /var/lib
       volumes:
-        - name: job-db-volume
+        - name: job-statistic-db-volume
           persistentVolumeClaim:
-            claimName: job-db-pvc
+            claimName: job-statistic-db-pvc
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: job-mongo-service
+  name: job-statistic-db-service
 spec:
   selector:
     app: JobTH
-    service: job
+    service: job-statistic
     db: mongo
   ports:
     - port: 27017
